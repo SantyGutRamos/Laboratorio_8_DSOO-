@@ -14,12 +14,12 @@ public class Cliente extends Persona {
         this.estado = estado;
     }
 
-    public String getIdCliente() { return idCliente; }
+    public String getIdCliente() { 
+        return idCliente; }
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
-
     public void agregarTitularidad(Titularidad t) {
         if (!titularidades.contains(t)) titularidades.add(t);
     }
@@ -31,7 +31,6 @@ public class Cliente extends Persona {
         }
         return cuentas;
     }
-
     @Override
     public void mostrarDatos() {
         System.out.println("Cliente ID: " + idCliente);

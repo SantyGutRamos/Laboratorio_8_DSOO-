@@ -18,7 +18,6 @@ public class Empleado extends Persona {
         t.procesar();
         System.out.println("Transacción procesada por " + getNombre() + " " + getApellido());
     }
-
     @Override
     public void mostrarDatos() {
         System.out.println("Empleado ID: " + idEmpleado + " - Cargo: " + cargo);

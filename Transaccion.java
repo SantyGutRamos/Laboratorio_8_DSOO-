@@ -1,5 +1,4 @@
 import java.time.*;
-
 public abstract class Transaccion {
     private static int contador = 1;
     private String idTransaccion;

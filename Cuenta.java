@@ -15,7 +15,6 @@ public class Cuenta {
         this.saldo = saldoInicial;
         this.fechaApertura = fechaApertura;
     }
-
     public String getNumeroCuenta() { return numeroCuenta; }
     public String getTipoCuenta() { return tipoCuenta; }
     public double getSaldo() { return saldo; }
