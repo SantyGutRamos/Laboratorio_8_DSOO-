@@ -1,20 +1,22 @@
-import java.time.*;
+// Titularidad.java (modificado)
+import java.time.LocalDate;
 
 public class Titularidad {
-    private Cliente cliente;
+    private UsuarioCliente cliente;
     private Cuenta cuenta;
     private LocalDate fechaInicio;
     private String tipoTitular;
 
-    public Titularidad(Cliente cliente, Cuenta cuenta, LocalDate fechaInicio, String tipoTitular) {
+    public Titularidad(UsuarioCliente cliente, Cuenta cuenta, LocalDate fechaInicio, String tipoTitular) {
         this.cliente = cliente;
         this.cuenta = cuenta;
         this.fechaInicio = fechaInicio;
         this.tipoTitular = tipoTitular;
     }
 
-    public Cliente getCliente() { return cliente; }
+    public UsuarioCliente getCliente() { return cliente; }
     public Cuenta getCuenta() { return cuenta; }
+
     @Override
     public String toString() {
         return "Titularidad{" +

@@ -1,3 +1,4 @@
+// Validador.java (mantener tu versión, incluida por completitud)
 import java.util.Scanner;
 public class Validador {
     public static int leerEntero(Scanner sc, String mensajeError) {
@@ -10,7 +11,6 @@ public class Validador {
         return valor;
     }
 
-    // === LEER MONTO POSITIVO ===
     public static double leerDoublePositivo(Scanner sc, String mensaje) {
         double valor;
         do {
@@ -29,13 +29,11 @@ public class Validador {
         } while (true);
     }
 
-    // === ID CLIENTE / EMPLEADO (letras y números) ===
     public static String leerId(Scanner sc, String mensaje) {
         String id;
         do {
             System.out.print(mensaje);
-            id = sc.nextLine().trim().toUpperCase(); // Lo pasamos a mayúsculas para que sea más limpio
-
+            id = sc.nextLine().trim().toUpperCase();
             if (id.length() != 10) {
                 System.out.println("El ID debe tener exactamente 10 caracteres.");
                 continue;
@@ -54,12 +52,11 @@ public class Validador {
             if (!soloLetrasYNumeros) {
                 System.out.println("El ID solo puede contener letras y números (sin símbolos).");
             } else {
-                return id; // Ejemplos válidos: ANA2025XYZ, EMP0012345, JUAN987654
+                return id;
             }
         } while (true);
     }
 
-    // === DNI (8 dígitos exactos) ===
     public static String leerDni(Scanner sc, String mensaje) {
         String dni;
         do {
@@ -88,7 +85,6 @@ public class Validador {
         } while (true);
     }
 
-    // === NOMBRE / APELLIDO / DIRECCIÓN / CARGO (solo letras y espacios) ===
     public static String leerNombre(Scanner sc, String mensaje) {
         String texto;
         do {
@@ -113,7 +109,6 @@ public class Validador {
         } while (true);
     }
 
-    // === TELÉFONO (9 dígitos, solo números) ===
     public static String leerTelefono(Scanner sc, String mensaje) {
         String telefono;
         do {
@@ -142,7 +137,6 @@ public class Validador {
         } while (true);
     }
 
-    // === CORREO (debe tener @ y .) ===
     public static String leerCorreo(Scanner sc, String mensaje) {
         String correo;
         do {
@@ -165,7 +159,6 @@ public class Validador {
         } while (true);
     }
 
-    // === NÚMERO DE CUENTA (no vacío) ===
     public static String leerNumeroCuenta(Scanner sc, String mensaje) {
         String num;
         do {
@@ -183,7 +176,6 @@ public class Validador {
         } while (true);
     }
 
-    // === TIPO DE CUENTA (Ahorros / Corriente) ===
     public static String leerTipoCuenta(Scanner sc) {
         String tipo;
         do {
@@ -196,7 +188,6 @@ public class Validador {
         return tipo;
     }
 
-    // === TIPO DE TITULAR (Principal / Secundario) ===
     public static String leerTipoTitular(Scanner sc) {
         String tipo;
         do {

@@ -1,11 +1,13 @@
-import java.time.*;
+// Transaccion.java (modificado para usar UsuarioEmpleado)
+import java.time.LocalDateTime;
+
 public abstract class Transaccion {
     private static int contador = 1;
     private String idTransaccion;
     private LocalDateTime fecha;
     protected double monto;
     private Cuenta cuenta;
-    private Empleado empleado;
+    private UsuarioEmpleado empleado;
 
     public Transaccion(Cuenta cuenta, double monto) {
         this.idTransaccion = "TRX-" + contador++;
@@ -16,7 +18,8 @@ public abstract class Transaccion {
 
     public Cuenta getCuenta() { return cuenta; }
     public double getMonto() { return monto; }
-    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
+    public void setEmpleado(UsuarioEmpleado empleado) { this.empleado = empleado; }
+    public UsuarioEmpleado getEmpleado() { return empleado; }
 
     public abstract void procesar();
 
@@ -24,6 +27,6 @@ public abstract class Transaccion {
     public String toString() {
         String emp = (empleado == null) ? "N/A" : empleado.getNombre() + " " + empleado.getApellido();
         return "[" + fecha + "] " + getClass().getSimpleName() + " ID:" + idTransaccion +
-               " Monto:" + monto + " Empleado:" + emp;
+                " Monto:" + monto + " Empleado:" + emp;
     }
 }

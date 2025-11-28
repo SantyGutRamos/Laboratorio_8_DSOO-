@@ -1,69 +1,105 @@
+// Main.java (nuevo flujo: login -> menú por rol)
 import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Banco gestor = new Banco();
+        Banco banco = new Banco();
+        GestorUsuarios gestor = new GestorUsuarios(banco);
         Scanner sc = new Scanner(System.in);
-        boolean salir = false;
 
+        Usuario admin = new Administrador(
+                "ADM0000001",
+                "admin@banco.com",
+                "admin123",
+                "activo",
+                "Admin",
+                "Principal",
+                "Oficina Central",
+                "999999999"
+        );
+
+        UsuarioEmpleado gerente = new Gerente(
+                "EMP0000001",
+                "gerente@banco.com",
+                "gerente123",
+                "activo",
+                "María",
+                "García",
+                "Sucursal Norte",
+                "998887766"
+        );
+
+        UsuarioEmpleado cajero = new Cajero(
+                "EMP0000002",
+                "cajero@banco.com",
+                "cajero123",
+                "activo",
+                "Carlos",
+                "López",
+                "Sucursal Sur",
+                "997776655"
+        );
+
+        UsuarioCliente clienteNormal = new ClienteNormal(
+                "CLI0000001",
+                "cliente@banco.com",
+                "cliente123",
+                "activo",
+                "Juan",
+                "Pérez",
+                "Av. Principal 123",
+                "999111222"
+        );
+
+        UsuarioCliente clienteVIP = new ClienteVIP(
+                "CLI0000002",
+                "vip@banco.com",
+                "vip123",
+                "activo",
+                "Ana",
+                "Vega",
+                "Calle Falsa 456",
+                "999333444"
+        );
+
+        gestor.registrarUsuario(admin);
+        gestor.registrarUsuario(gerente);
+        gestor.registrarUsuario(cajero);
+        gestor.registrarUsuario(clienteNormal);
+        gestor.registrarUsuario(clienteVIP);
+
+        boolean salir = false;
         while (!salir) {
-            mostrarMenu();
+            System.out.println("\n=== SISTEMA BANCARIO - LOGIN ===");
+            System.out.println("1. Iniciar sesión");
+            System.out.println("0. Salir");
+            System.out.print("Seleccione: ");
             int opcion = Validador.leerEntero(sc, "Opción inválida. Intente de nuevo: ");
-            sc.nextLine();
 
             switch (opcion) {
                 case 1 -> {
-                    try {
-                        registrarCliente(gestor, sc);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: " + e.getMessage());
+                    System.out.print("Correo: ");
+                    String correo = sc.nextLine().trim();
+                    System.out.print("Contraseña: ");
+                    String pass = sc.nextLine().trim();
+
+                    Usuario u = gestor.login(correo, pass);
+                    if (u == null) {
+                        System.out.println("Login fallido o usuario inactivo.");
+                    } else {
+                        System.out.println("Bienvenido: " + u.getNombre() + " " + u.getApellido() + " (" + u.getClass().getSimpleName() + ")");
+                        if (u instanceof UsuarioCliente) menuCliente((UsuarioCliente) u, banco, sc);
+                        else if (u instanceof Cajero) menuCajero((Cajero) u, banco, sc);
+                        else if (u instanceof Gerente) menuGerente((Gerente) u, banco, sc);
+                        else if (u instanceof UsuarioEmpleado) menuEmpleadoGenerico((UsuarioEmpleado) u, banco, sc);
+                        else if (u instanceof Administrador) menuAdmin((Administrador) u, banco, gestor, sc);
+                        else System.out.println("Tipo de usuario no soportado en menús.");
                     }
                 }
-                case 2 -> {
-                    try {
-                        registrarEmpleado(gestor, sc);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: " + e.getMessage());
-                    }
-                }
-                case 3 -> {
-                    try {
-                        crearCuenta(gestor, sc);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: " + e.getMessage());
-                    }
-                }
-                case 4 -> {
-                    try {
-                        asignarTitular(gestor, sc);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Error: " + e.getMessage());
-                    }
-                }
-                case 5 -> {
-                    try {
-                        registrarDeposito(gestor, sc);
-                    } catch (Exception e) {   // aquí puede saltar también RuntimeException del retiro
-                        System.out.println("Error en el depósito: " + e.getMessage());
-                    }
-                }
-                case 6 -> {
-                    try {
-                        registrarRetiro(gestor, sc);
-                    } catch (Exception e) {
-                        System.out.println("Error en el retiro: " + e.getMessage());
-                    }
-                }
-                case 7 -> consultarSaldo(gestor, sc);
-                case 8 -> verMovimientos(gestor, sc);
-                case 9 -> listarCuentasCliente(gestor, sc);
-                case 10 -> gestor.listarClientes();
-                case 11 -> gestor.listarEmpleados();
-                case 12 -> gestor.listarCuentas();
                 case 0 -> {
                     salir = true;
-                    System.out.println("Fin del programa.");
+                    System.out.println("Saliendo...");
                 }
                 default -> System.out.println("Opción no válida.");
             }
@@ -71,106 +107,235 @@ public class Main {
         sc.close();
     }
 
-    private static void mostrarMenu() {
-        System.out.println("\n======= SISTEMA BANCARIO =======");
-        System.out.println("1. Registrar cliente");
-        System.out.println("2. Registrar empleado");
-        System.out.println("3. Crear cuenta");
-        System.out.println("4. Asignar titular a cuenta");
-        System.out.println("5. Registrar depósito");
-        System.out.println("6. Registrar retiro");
-        System.out.println("7. Consultar saldo");
-        System.out.println("8. Ver movimientos de cuenta");
-        System.out.println("9. Listar cuentas de un cliente");
-        System.out.println("10. Listar todos los clientes");
-        System.out.println("11. Listar todos los empleados");
-        System.out.println("12. Listar todas las cuentas");
-        System.out.println("0. Salir");
-        System.out.print("Seleccione una opción: ");
-    }
-
-    // === REGISTRAR CLIENTE ===
-    private static void registrarCliente(Banco gestor, Scanner sc) {
-        System.out.println("\n--- REGISTRAR CLIENTE ---");
-        String idCliente = Validador.leerId(sc, "ID Cliente: ");
-        String dni = Validador.leerDni(sc, "DNI (8 dígitos): ");
-        String nombre = Validador.leerNombre(sc, "Nombre: ");
-        String apellido = Validador.leerNombre(sc, "Apellido: ");
-        String direccion = Validador.leerNombre(sc, "Dirección: ");
-        String telefono = Validador.leerTelefono(sc, "Teléfono (9 dígitos): ");
-        String correo = Validador.leerCorreo(sc, "Correo: ");
-
-        Cliente cliente = new Cliente(idCliente, dni, nombre, apellido, direccion, telefono, correo, "activo");
-        gestor.registrarCliente(cliente);
-    }
-
-    // === REGISTRAR EMPLEADO ===
-    private static void registrarEmpleado(Banco gestor, Scanner sc) {
-        System.out.println("\n--- REGISTRAR EMPLEADO ---");
-        String idEmpleado = Validador.leerId(sc, "ID Empleado: ");
-        String dni = Validador.leerDni(sc, "DNI (8 dígitos): ");
-        String nombre = Validador.leerNombre(sc, "Nombre: ");
-        String apellido = Validador.leerNombre(sc, "Apellido: ");
-        String direccion = Validador.leerNombre(sc, "Dirección: ");
-        String telefono = Validador.leerTelefono(sc, "Teléfono (9 dígitos): ");
-        String cargo = Validador.leerNombre(sc, "Cargo: ");
-
-        Empleado empleado = new Empleado(idEmpleado, dni, nombre, apellido, direccion, telefono, cargo);
-        gestor.registrarEmpleado(empleado);
-    }
-    private static void crearCuenta(Banco gestor, Scanner sc) {
-        System.out.println("\n--- CREAR CUENTA ---");
-        String numCuenta = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
-        String tipo = Validador.leerTipoCuenta(sc);
-        double saldoInicial = Validador.leerDoublePositivo(sc, "Saldo inicial: ");
-
-        Cuenta cuenta = new Cuenta(numCuenta, tipo, saldoInicial, LocalDate.now());
-        gestor.crearCuenta(cuenta);
-    }
-
-    // === ASIGNAR TITULAR ===
-    private static void asignarTitular(Banco gestor, Scanner sc) {
-        System.out.println("\n--- ASIGNAR TITULAR ---");
-        String idC = Validador.leerId(sc, "ID Cliente: ");
-        String nCuenta = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
-        String tipoTitular = Validador.leerTipoTitular(sc);
-
-        Cliente cl = gestor.buscarClientePorId(idC);
-        Cuenta cu = gestor.buscarCuentaPorNumero(nCuenta);
-
-        if (cl != null && cu != null) {
-            gestor.asignarTitular(cl, cu, LocalDate.now(), tipoTitular);
-        } else {
-            System.out.println(" Cliente o cuenta no encontrada.");
+    private static void menuCliente(UsuarioCliente u, Banco banco, Scanner sc) {
+        boolean salir = false;
+        while (!salir) {
+            System.out.println("\n--- MENU CLIENTE (" + u.getNombre() + ") ---");
+            System.out.println("1. Mostrar datos");
+            System.out.println("2. Ver mis cuentas");
+            System.out.println("3. Consultar saldo (ingrese número cuenta)");
+            System.out.println("4. Ver movimientos (número cuenta)");
+            System.out.println("5. Depositar en mi cuenta");
+            System.out.println("6. Retirar de mi cuenta");
+            System.out.println("0. Cerrar sesión");
+            int op = Validador.leerEntero(sc, "Opción inválida: ");
+            switch (op) {
+                case 1 -> u.mostrarDatos();
+                case 2 -> u.mostrarCuentas();
+                case 3 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    banco.consultarSaldo(num);
+                }
+                case 4 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    banco.verMovimientos(num);
+                }
+                case 5 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta (propia): ");
+                    double monto = Validador.leerDoublePositivo(sc, "Monto a depositar: ");
+                    // buscar cuenta en lista de usuario
+                    Cuenta cuenta = null;
+                    for (Cuenta c : u.getCuentas()) if (c.getNumeroCuenta().equals(num)) cuenta = c;
+                    if (cuenta == null) System.out.println("Cuenta no encontrada entre sus cuentas.");
+                    else banco.registrarDeposito(num, monto, null);
+                }
+                case 6 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta (propia): ");
+                    double monto = Validador.leerDoublePositivo(sc, "Monto a retirar: ");
+                    Cuenta cuenta = null;
+                    for (Cuenta c : u.getCuentas()) if (c.getNumeroCuenta().equals(num)) cuenta = c;
+                    if (cuenta == null) System.out.println("Cuenta no encontrada entre sus cuentas.");
+                    else {
+                        // verificar límites según tipo de cliente
+                        if (u instanceof ClienteNormal) {
+                            ClienteNormal cn = (ClienteNormal) u;
+                            if (monto > cn.getLimiteRetiro()) {
+                                System.out.println("Límite excedido para ClienteNormal: S/ " + cn.getLimiteRetiro());
+                                break;
+                            }
+                        } else if (u instanceof ClienteVIP) {
+                            ClienteVIP cv = (ClienteVIP) u;
+                            if (monto > cv.getLimiteRetiro()) {
+                                System.out.println("Límite excedido para ClienteVIP: S/ " + cv.getLimiteRetiro());
+                                break;
+                            }
+                        }
+                        banco.registrarRetiro(num, monto, null);
+                    }
+                }
+                case 0 -> salir = true;
+                default -> System.out.println("Opción no válida.");
+            }
         }
     }
-    private static void registrarDeposito(Banco gestor, Scanner sc) {
-        System.out.println("\n--- DEPÓSITO ---");
-        String numDep = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
-        double montoDep = Validador.leerDoublePositivo(sc, "Monto a depositar: ");
-        String idEmpDep = Validador.leerId(sc, "ID Empleado que procesa: ");
-        gestor.registrarDeposito(numDep, montoDep, idEmpDep);
+
+    private static void menuCajero(Cajero cajero, Banco banco, Scanner sc) {
+        boolean salir = false;
+        while (!salir) {
+            System.out.println("\n--- MENU CAJERO (" + cajero.getNombre() + ") ---");
+            System.out.println("1. Procesar depósito");
+            System.out.println("2. Procesar retiro");
+            System.out.println("3. Consultar saldo");
+            System.out.println("4. Ver movimientos");
+            System.out.println("0. Cerrar sesión");
+            int op = Validador.leerEntero(sc, "Opción inválida: ");
+            switch (op) {
+                case 1 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    double monto = Validador.leerDoublePositivo(sc, "Monto a depositar: ");
+                    banco.registrarDeposito(num, monto, cajero);
+                }
+                case 2 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    double monto = Validador.leerDoublePositivo(sc, "Monto a retirar: ");
+                    banco.registrarRetiro(num, monto, cajero);
+                }
+                case 3 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    banco.consultarSaldo(num);
+                }
+                case 4 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    banco.verMovimientos(num);
+                }
+                case 0 -> salir = true;
+                default -> System.out.println("Opción no válida.");
+            }
+        }
     }
 
-    // === RETIRO ===
-    private static void registrarRetiro(Banco gestor, Scanner sc) {
-        System.out.println("\n--- RETIRO ---");
-        String numRet = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
-        double montoRet = Validador.leerDoublePositivo(sc, "Monto a retirar: ");
-        String idEmpRet = Validador.leerId(sc, "ID Empleado que procesa: ");
-        gestor.registrarRetiro(numRet, montoRet, idEmpRet);
-    }
-    private static void consultarSaldo(Banco gestor, Scanner sc) {
-        String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
-        gestor.consultarSaldo(num);
+    private static void menuGerente(Gerente gerente, Banco banco, Scanner sc) {
+        boolean salir = false;
+        while (!salir) {
+            System.out.println("\n--- MENU GERENTE (" + gerente.getNombre() + ") ---");
+            System.out.println("1. Procesar depósito");
+            System.out.println("2. Procesar retiro");
+            System.out.println("3. Consultar saldo");
+            System.out.println("4. Ver movimientos");
+            System.out.println("5. Crear cuenta");
+            System.out.println("6. Listar clientes");
+            System.out.println("7. Listar cuentas");
+            System.out.println("0. Cerrar sesión");
+            int op = Validador.leerEntero(sc, "Opción inválida: ");
+            switch (op) {
+                case 1 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    double monto = Validador.leerDoublePositivo(sc, "Monto a depositar: ");
+                    banco.registrarDeposito(num, monto, gerente);
+                }
+                case 2 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    double monto = Validador.leerDoublePositivo(sc, "Monto a retirar: ");
+                    banco.registrarRetiro(num, monto, gerente);
+                }
+                case 3 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    banco.consultarSaldo(num);
+                }
+                case 4 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    banco.verMovimientos(num);
+                }
+                case 5 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta nueva: ");
+                    String tipo = Validador.leerTipoCuenta(sc);
+                    double saldo = Validador.leerDoublePositivo(sc, "Saldo inicial: ");
+                    Cuenta c = new Cuenta(num, tipo, saldo, LocalDate.now());
+                    banco.crearCuenta(c);
+                }
+                case 6 -> banco.listarClientes();
+                case 7 -> banco.listarCuentas();
+                case 0 -> salir = true;
+                default -> System.out.println("Opción no válida.");
+            }
+        }
     }
 
-    private static void verMovimientos(Banco gestor, Scanner sc) {
-        String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
-        gestor.verMovimientos(num);
+    private static void menuEmpleadoGenerico(UsuarioEmpleado empleado, Banco banco, Scanner sc) {
+        System.out.println("Accediendo al menú genérico de empleado...");
+        if (empleado instanceof Cajero) menuCajero((Cajero) empleado, banco, sc);
+        else if (empleado instanceof Gerente) menuGerente((Gerente) empleado, banco, sc);
+        else {
+            menuCajero(new Cajero(empleado.getId(), empleado.getCorreo(), empleado.getContraseña(), empleado.getEstado(), empleado.getNombre(), empleado.getApellido(), empleado.direccion, empleado.telefono), banco, sc);
+        }
     }
-    private static void listarCuentasCliente(Banco gestor, Scanner sc) {
-        String id = Validador.leerId(sc, "ID Cliente: ");
-        gestor.listarCuentasCliente(id);
+
+    private static void menuAdmin(Administrador admin, Banco banco, GestorUsuarios gestor, Scanner sc) {
+        boolean salir = false;
+        while (!salir) {
+            System.out.println("\n--- MENU ADMIN (" + admin.getNombre() + ") ---");
+            System.out.println("1. Crear cliente");
+            System.out.println("2. Crear empleado (Cajero/Gerente)");
+            System.out.println("3. Crear cuenta");
+            System.out.println("4. Eliminar cliente");
+            System.out.println("5. Eliminar empleado");
+            System.out.println("6. Eliminar cuenta");
+            System.out.println("7. Listar clientes");
+            System.out.println("8. Listar empleados");
+            System.out.println("9. Listar cuentas");
+            System.out.println("0. Cerrar sesión");
+            int op = Validador.leerEntero(sc, "Opción inválida: ");
+            switch (op) {
+                case 1 -> {
+                    System.out.println("--- CREAR CLIENTE ---");
+                    String id = Validador.leerId(sc, "ID Cliente (10 chars): ");
+                    String correo = Validador.leerCorreo(sc, "Correo cliente: ");
+                    String pass = GestorUsuarios.generarContraseñaSegura();
+                    String dni = Validador.leerDni(sc, "DNI: ");
+                    String nombre = Validador.leerNombre(sc, "Nombre: ");
+                    String apellido = Validador.leerNombre(sc, "Apellido: ");
+                    String direccion = Validador.leerNombre(sc, "Dirección: ");
+                    String telefono = Validador.leerTelefono(sc, "Teléfono: ");
+                    System.out.println("Tipo cliente: 1) Normal  2) VIP");
+                    int t = Validador.leerEntero(sc, "Seleccione: ");
+                    UsuarioCliente nuevo = (t == 2) ?
+                            new ClienteVIP(id, correo, pass, "activo", nombre, apellido, direccion, telefono) :
+                            new ClienteNormal(id, correo, pass, "activo", nombre, apellido, direccion, telefono);
+                    gestor.registrarUsuario(nuevo);
+                    System.out.println("Cliente creado. Contraseña asignada: " + pass);
+                }
+                case 2 -> {
+                    System.out.println("--- CREAR EMPLEADO ---");
+                    String id = Validador.leerId(sc, "ID Empleado (10 chars): ");
+                    String correo = Validador.leerCorreo(sc, "Correo empleado: ");
+                    String pass = GestorUsuarios.generarContraseñaSegura();
+                    String nombre = Validador.leerNombre(sc, "Nombre: ");
+                    String apellido = Validador.leerNombre(sc, "Apellido: ");
+                    String direccion = Validador.leerNombre(sc, "Dirección: ");
+                    String telefono = Validador.leerTelefono(sc, "Teléfono: ");
+                    System.out.println("Tipo empleado: 1) Cajero  2) Gerente");
+                    int t = Validador.leerEntero(sc, "Seleccione: ");
+                    UsuarioEmpleado nuevo = (t == 2) ?
+                            new Gerente(id, correo, pass, "activo", nombre, apellido, direccion, telefono) :
+                            new Cajero(id, correo, pass, "activo", nombre, apellido, direccion, telefono);
+                    gestor.registrarUsuario(nuevo);
+                    System.out.println("Empleado creado. Contraseña asignada: " + pass);
+                }
+                case 3 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta: ");
+                    String tipo = Validador.leerTipoCuenta(sc);
+                    double saldo = Validador.leerDoublePositivo(sc, "Saldo inicial: ");
+                    Cuenta c = new Cuenta(num, tipo, saldo, LocalDate.now());
+                    banco.crearCuenta(c);
+                }
+                case 4 -> {
+                    String id = Validador.leerId(sc, "ID Cliente a eliminar: ");
+                    banco.eliminarCliente(id);
+                }
+                case 5 -> {
+                    String id = Validador.leerId(sc, "ID Empleado a eliminar: ");
+                    banco.eliminarEmpleado(id);
+                }
+                case 6 -> {
+                    String num = Validador.leerNumeroCuenta(sc, "Número de cuenta a eliminar: ");
+                    banco.eliminarCuenta(num);
+                }
+                case 7 -> banco.listarClientes();
+                case 8 -> banco.listarEmpleados();
+                case 9 -> banco.listarCuentas();
+                case 0 -> salir = true;
+                default -> System.out.println("Opción no válida.");
+            }
+        }
     }
 }

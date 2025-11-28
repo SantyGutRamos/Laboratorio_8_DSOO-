@@ -1,3 +1,4 @@
+// Cuenta.java  (mantener tu versión, se incluye aquí por completitud)
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,6 @@ public class Cuenta {
     @Override
     public String toString() {
         return "Cuenta{" + "numeroCuenta='" + numeroCuenta + '\'' + ", tipoCuenta='" + tipoCuenta + '\'' +
-               ", saldo=" + saldo + ", fechaApertura=" + fechaApertura + '}';
+                ", saldo=" + saldo + ", fechaApertura=" + fechaApertura + '}';
     }
 }
-
