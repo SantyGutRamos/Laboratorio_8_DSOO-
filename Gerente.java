@@ -1,5 +1,17 @@
 public class Gerente extends UsuarioEmpleado {
 
+    public Gerente(String id, String contraseña, String estado,
+                   String nombre, String apellido, String direccion, String telefono) {
+        super(id,
+                apellido.toLowerCase() + "@banco.com",
+                contraseña,
+                estado,
+                nombre,
+                apellido,
+                direccion,
+                telefono);
+    }
+
     public Gerente(String id, String correo, String contraseña, String estado,
                    String nombre, String apellido, String direccion, String telefono) {
         super(id, correo, contraseña, estado, nombre, apellido, direccion, telefono);

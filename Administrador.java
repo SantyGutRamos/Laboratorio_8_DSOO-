@@ -1,4 +1,17 @@
 public class Administrador extends Usuario {
+
+    public Administrador(String id, String contraseña, String estado,
+                         String nombre, String apellido, String direccion, String telefono) {
+        super(id,
+                apellido.toLowerCase() + "@banco.com",
+                contraseña,
+                estado,
+                nombre,
+                apellido,
+                direccion,
+                telefono);
+    }
+
     public Administrador(String id, String correo, String contraseña, String estado,
                          String nombre, String apellido, String direccion, String telefono) {
         super(id, correo, contraseña, estado, nombre, apellido, direccion, telefono);

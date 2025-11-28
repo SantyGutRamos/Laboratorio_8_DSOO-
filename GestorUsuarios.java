@@ -12,10 +12,19 @@ public class GestorUsuarios {
 
 
     public void registrarUsuario(Usuario u) {
-        if (usuariosPorCorreo.containsKey(u.getCorreo())) {
+
+        if (usuariosPorCorreo.containsKey(u.getCorreo().toLowerCase())) {
             throw new IllegalArgumentException("Ya existe un usuario con ese correo.");
         }
-        usuariosPorCorreo.put(u.getCorreo(), u);
+
+        usuariosPorCorreo.put(u.getCorreo().toLowerCase(), u);
+
+        if (u instanceof UsuarioCliente cliente) {
+            banco.registrarCliente(cliente);
+        }
+        else if (u instanceof UsuarioEmpleado empleado) {
+            banco.registrarEmpleado(empleado);
+        }
     }
 
     public Usuario buscarPorCorreo(String correo) {

@@ -226,6 +226,7 @@ while (!salir) {
             System.out.println("5. Crear cuenta");
             System.out.println("6. Listar clientes");
             System.out.println("7. Listar cuentas");
+            System.out.println("8. Vincular cuenta existente a cliente");
             System.out.println("0. Cerrar sesión");
             int op = Validador.leerEntero(sc, "Opción inválida: ");
             switch (op) {
@@ -256,6 +257,20 @@ while (!salir) {
                 }
                 case 6 -> banco.listarClientes();
                 case 7 -> banco.listarCuentas();
+                case 8 -> {
+                    System.out.println("--- VINCULAR CUENTA A CLIENTE ---");
+                    String idCliente = Validador.leerId(sc, "ID del cliente: ");
+                    String numCuenta = Validador.leerNumeroCuenta(sc, "Número de cuenta a vincular: ");
+                    String tipoTitular = "TITULAR";
+                    try {
+                        UsuarioCliente cliente = banco.buscarClientePorId(idCliente);
+                        Cuenta cuenta = banco.buscarCuentaPorNumero(numCuenta);
+                        banco.asignarTitular(cliente, cuenta, LocalDate.now(), tipoTitular);
+                        System.out.println("¡Cuenta vinculada exitosamente al cliente!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                }
                 case 0 -> salir = true;
                 default -> System.out.println("Opción no válida.");
             }
@@ -284,6 +299,7 @@ while (!salir) {
             System.out.println("7. Listar clientes");
             System.out.println("8. Listar empleados");
             System.out.println("9. Listar cuentas");
+            System.out.println("10. Vincular cuenta existente a cliente");
             System.out.println("0. Cerrar sesión");
             int op = Validador.leerEntero(sc, "Opción inválida: ");
             switch (op) {
@@ -344,6 +360,20 @@ while (!salir) {
                 case 7 -> banco.listarClientes();
                 case 8 -> banco.listarEmpleados();
                 case 9 -> banco.listarCuentas();
+                case 10 -> {
+                    System.out.println("--- VINCULAR CUENTA A CLIENTE ---");
+                    String idCliente = Validador.leerId(sc, "ID del cliente: ");
+                    String numCuenta = Validador.leerNumeroCuenta(sc, "Número de cuenta a vincular: ");
+                    String tipoTitular = "TITULAR"; // puedes extenderlo después (cotitular, autorizado, etc.)
+                    try {
+                        UsuarioCliente cliente = banco.buscarClientePorId(idCliente);
+                        Cuenta cuenta = banco.buscarCuentaPorNumero(numCuenta);
+                        banco.asignarTitular(cliente, cuenta, LocalDate.now(), tipoTitular);
+                        System.out.println("¡Cuenta vinculada exitosamente al cliente!");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                }
                 case 0 -> salir = true;
                 default -> System.out.println("Opción no válida.");
             }
