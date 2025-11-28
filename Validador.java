@@ -1,4 +1,3 @@
-// Validador.java (mantener tu versión, incluida por completitud)
 import java.util.Scanner;
 public class Validador {
     public static int leerEntero(Scanner sc, String mensajeError) {

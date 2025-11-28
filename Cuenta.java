@@ -1,4 +1,3 @@
-// Cuenta.java  (mantener tu versión, se incluye aquí por completitud)
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

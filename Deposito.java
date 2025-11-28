@@ -1,4 +1,3 @@
-// Deposito.java (igual, incluido por completitud)
 public class Deposito extends Transaccion {
     public Deposito(Cuenta cuenta, double monto) {
         super(cuenta, monto);

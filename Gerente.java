@@ -1,4 +1,3 @@
-// Gerente.java
 public class Gerente extends UsuarioEmpleado {
 
     public Gerente(String id, String correo, String contraseña, String estado,

@@ -1,6 +1,5 @@
-// Main.java (nuevo flujo: login -> menú por rol)
 import java.time.LocalDate;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -70,40 +69,52 @@ public class Main {
         gestor.registrarUsuario(clienteVIP);
 
         boolean salir = false;
-        while (!salir) {
-            System.out.println("\n=== SISTEMA BANCARIO - LOGIN ===");
-            System.out.println("1. Iniciar sesión");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione: ");
-            int opcion = Validador.leerEntero(sc, "Opción inválida. Intente de nuevo: ");
+while (!salir) {
+    System.out.println("\n=== SISTEMA BANCARIO - LOGIN ===");
+    System.out.println("1. Iniciar sesión");
+    System.out.println("0. Salir");
+    System.out.print("Seleccione: ");
+    int opcion = Validador.leerEntero(sc, "Opción inválida. Intente de nuevo: ");
 
-            switch (opcion) {
-                case 1 -> {
-                    System.out.print("Correo: ");
-                    String correo = sc.nextLine().trim();
-                    System.out.print("Contraseña: ");
-                    String pass = sc.nextLine().trim();
+    switch (opcion) {
+        case 1 -> {
+            System.out.print("Correo: ");
+            String correo = sc.nextLine().trim();
 
-                    Usuario u = gestor.login(correo, pass);
-                    if (u == null) {
-                        System.out.println("Login fallido o usuario inactivo.");
-                    } else {
-                        System.out.println("Bienvenido: " + u.getNombre() + " " + u.getApellido() + " (" + u.getClass().getSimpleName() + ")");
-                        if (u instanceof UsuarioCliente) menuCliente((UsuarioCliente) u, banco, sc);
-                        else if (u instanceof Cajero) menuCajero((Cajero) u, banco, sc);
-                        else if (u instanceof Gerente) menuGerente((Gerente) u, banco, sc);
-                        else if (u instanceof UsuarioEmpleado) menuEmpleadoGenerico((UsuarioEmpleado) u, banco, sc);
-                        else if (u instanceof Administrador) menuAdmin((Administrador) u, banco, gestor, sc);
-                        else System.out.println("Tipo de usuario no soportado en menús.");
-                    }
-                }
-                case 0 -> {
-                    salir = true;
-                    System.out.println("Saliendo...");
-                }
-                default -> System.out.println("Opción no válida.");
+            // Validación de correo
+            if (!correo.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                System.out.println("El correo no tiene un formato válido.");
+                continue; 
             }
+
+            System.out.print("Contraseña: ");
+            String pass = sc.nextLine().trim();
+
+            Usuario u = gestor.login(correo, pass);
+            if (u == null) {
+                System.out.println("Login fallido.");
+                continue; // vuelve al menú sin cerrar el programa
+            }
+
+            System.out.println("Bienvenido: " + u.getNombre() + " " + u.getApellido() + " (" + u.getClass().getSimpleName() + ")");
+
+            if (u instanceof UsuarioCliente) menuCliente((UsuarioCliente) u, banco, sc);
+            else if (u instanceof Cajero) menuCajero((Cajero) u, banco, sc);
+            else if (u instanceof Gerente) menuGerente((Gerente) u, banco, sc);
+            else if (u instanceof UsuarioEmpleado) menuEmpleadoGenerico((UsuarioEmpleado) u, banco, sc);
+            else if (u instanceof Administrador) menuAdmin((Administrador) u, banco, gestor, sc);
+            else System.out.println("Tipo de usuario no soportado en menús.");
         }
+
+        case 0 -> {
+            salir = true;
+            System.out.println("Saliendo...");
+        }
+
+        default -> System.out.println("Opción no válida.");
+    }
+}
+
         sc.close();
     }
 

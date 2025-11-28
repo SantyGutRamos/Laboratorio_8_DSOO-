@@ -1,4 +1,3 @@
-// Retiro.java (igual, incluido por completitud)
 public class Retiro extends Transaccion {
     public Retiro(Cuenta cuenta, double monto) {
         super(cuenta, monto);

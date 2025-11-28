@@ -1,14 +1,12 @@
-// Banco.java  (modificado para trabajar con UsuarioCliente / UsuarioEmpleado)
 import java.time.LocalDate;
 import java.util.*;
 
 public class Banco {
-    private Map<String, UsuarioCliente> clientes = new HashMap<>(); // key: id (10 chars)
-    private Map<String, UsuarioEmpleado> empleados = new HashMap<>(); // key: id
-    private Map<String, Cuenta> cuentas = new HashMap<>(); // key: numeroCuenta
+    private Map<String, UsuarioCliente> clientes = new HashMap<>(); 
+    private Map<String, UsuarioEmpleado> empleados = new HashMap<>(); 
+    private Map<String, Cuenta> cuentas = new HashMap<>(); 
     private List<Titularidad> titularidades = new ArrayList<>();
 
-    // Registrar cliente en banco (además GestorUsuarios ya lo inscribe allí)
     public void registrarCliente(UsuarioCliente c) {
         if (clientes.containsKey(c.getId())) {
             throw new IllegalArgumentException("Ya existe un cliente con ese ID");
@@ -65,7 +63,6 @@ public class Banco {
         System.out.println("Titularidad asignada: " + cliente.getNombre() + "  Cuenta " + cuenta.getNumeroCuenta());
     }
 
-    // empleado puede ser null -> operación autoservicio del cliente (cuando cliente deposita/retira por sí mismo)
     public void registrarDeposito(String numeroCuenta, double monto, UsuarioEmpleado empleado) {
         Cuenta c = cuentas.get(numeroCuenta);
         if (c == null) {
@@ -76,7 +73,7 @@ public class Banco {
         if (empleado != null) {
             empleado.procesarTransaccion(d);
         } else {
-            // autoservicio: procesa sin empleado
+
             d.procesar();
             c.agregarTransaccion(d);
         }
@@ -93,7 +90,7 @@ public class Banco {
             if (empleado != null) {
                 empleado.procesarTransaccion(r);
             } else {
-                // autoservicio: procesar validar límites será responsabilidad del cliente antes de llamar aquí
+
                 r.procesar();
                 c.agregarTransaccion(r);
             }
@@ -170,7 +167,6 @@ public class Banco {
         }
     }
 
-    // Métodos de eliminación y edición usados por Admin (opcional)
     public void eliminarCliente(String idCliente) {
         if (clientes.remove(idCliente) != null) {
             System.out.println("Cliente eliminado: " + idCliente);

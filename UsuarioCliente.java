@@ -1,4 +1,3 @@
-// UsuarioCliente.java
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,6 @@ public abstract class UsuarioCliente extends Usuario {
         for (Cuenta c : cuentas) System.out.println(" - " + c);
     }
 
-    // acciones permitidas para clientes (por defecto implementadas)
     public void consultarSaldo(Cuenta c) {
         System.out.println("Saldo cuenta " + c.getNumeroCuenta() + ": S/ " + c.getSaldo());
     }
@@ -38,7 +36,7 @@ public abstract class UsuarioCliente extends Usuario {
             System.out.println("No puede depositar en una cuenta que no es suya.");
             return;
         }
-        banco.registrarDeposito(c.getNumeroCuenta(), monto, null); // empleado null => se registra como auto-servicio
+        banco.registrarDeposito(c.getNumeroCuenta(), monto, null); 
     }
 
     public void retirarDePropiaCuenta(Cuenta c, double monto, Banco banco) {

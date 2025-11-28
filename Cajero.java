@@ -1,4 +1,3 @@
-// Cajero.java
 public class Cajero extends UsuarioEmpleado {
 
     public Cajero(String id, String correo, String contraseña, String estado,

@@ -1,4 +1,3 @@
-// ClienteNormal.java
 public class ClienteNormal extends UsuarioCliente {
     private static final double LIMITE_RETIRO = 1500.0;
 

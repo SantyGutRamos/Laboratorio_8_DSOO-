@@ -1,8 +1,8 @@
 public abstract class Usuario {
-    protected String id;           // id interno (10 chars), ejemplo: CLI2025001
-    protected String correo;       // nombreUsuario (login)
+    protected String id;        
+    protected String correo;     
     protected String contraseña;
-    protected String estado;       // "activo"/"inactivo"
+    protected String estado;     
     protected String nombre;
     protected String apellido;
     protected String direccion;

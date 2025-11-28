@@ -1,4 +1,3 @@
-// UsuarioEmpleado.java
 public abstract class UsuarioEmpleado extends Usuario {
 
     public UsuarioEmpleado(String id, String correo, String contraseña, String estado,
@@ -6,7 +5,7 @@ public abstract class UsuarioEmpleado extends Usuario {
         super(id, correo, contraseña, estado, nombre, apellido, direccion, telefono);
     }
 
-    // procesar transaccion (empleado valida y ejecuta)
+    // procesar transaccion 
     public void procesarTransaccion(Transaccion t) {
         t.setEmpleado(this);
         t.procesar();

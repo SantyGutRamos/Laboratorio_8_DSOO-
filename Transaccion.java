@@ -1,4 +1,3 @@
-// Transaccion.java (modificado para usar UsuarioEmpleado)
 import java.time.LocalDateTime;
 
 public abstract class Transaccion {

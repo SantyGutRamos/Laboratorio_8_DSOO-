@@ -1,4 +1,3 @@
-// Titularidad.java (modificado)
 import java.time.LocalDate;
 
 public class Titularidad {
