@@ -34,23 +34,27 @@ public class Validador {
         String id;
         do {
             System.out.print(mensaje);
-            id = sc.nextLine().trim();
-            if (id.isEmpty()) {
-                System.out.println(" El ID no puede estar vacío.");
+            id = sc.nextLine().trim().toUpperCase(); // Lo pasamos a mayúsculas para que sea más limpio
+
+            if (id.length() != 10) {
+                System.out.println("El ID debe tener exactamente 10 caracteres.");
                 continue;
             }
-            boolean valido = true;
-            for (int i = 0; i < id.length(); i++) {
-                char c = id.charAt(i);
+            if (id.contains(" ")) {
+                System.out.println("El ID no puede contener espacios.");
+                continue;
+            }
+            boolean soloLetrasYNumeros = true;
+            for (char c : id.toCharArray()) {
                 if (!Character.isLetterOrDigit(c)) {
-                    valido = false;
+                    soloLetrasYNumeros = false;
                     break;
                 }
             }
-            if (!valido) {
-                System.out.println(" El ID solo puede contener letras y números (sin espacios ni símbolos).");
+            if (!soloLetrasYNumeros) {
+                System.out.println("El ID solo puede contener letras y números (sin símbolos).");
             } else {
-                return id;
+                return id; // Ejemplos válidos: ANA2025XYZ, EMP0012345, JUAN987654
             }
         } while (true);
     }
@@ -91,19 +95,18 @@ public class Validador {
             System.out.print(mensaje);
             texto = sc.nextLine().trim();
             if (texto.isEmpty()) {
-                System.out.println(" Este campo no puede estar vacío.");
+                System.out.println("Este campo no puede estar vacío.");
                 continue;
             }
             boolean valido = true;
-            for (int i = 0; i < texto.length(); i++) {
-                char c = texto.charAt(i);
-                if (!Character.isLetter(c) && c != ' ') {
+            for (char c : texto.toCharArray()) {
+                if (!Character.isLetterOrDigit(c) && c != ' ' && c != ',' && c != '.' && c != '#' && c != '-') {
                     valido = false;
                     break;
                 }
             }
             if (!valido) {
-                System.out.println(" Solo se permiten letras y espacios.");
+                System.out.println("Solo letras, números, espacios y símbolos como # , . - son permitidos (dirección realista).");
             } else {
                 return texto;
             }
@@ -144,13 +147,18 @@ public class Validador {
         String correo;
         do {
             System.out.print(mensaje);
-            correo = sc.nextLine().trim();
+            correo = sc.nextLine().trim().toLowerCase();
             if (correo.isEmpty()) {
-                System.out.println(" El correo no puede estar vacío.");
+                System.out.println("El correo no puede estar vacío.");
                 continue;
             }
-            if (!correo.contains("@") || !correo.contains(".")) {
-                System.out.println(" El correo debe contener @ y un punto (ej: juan@mail.com).");
+            int arroba = correo.indexOf('@');
+            int ultimoPunto = correo.lastIndexOf('.');
+
+            if (arroba <= 0 || arroba != correo.lastIndexOf('@')) {
+                System.out.println("El correo debe tener exactamente un @.");
+            } else if (ultimoPunto <= arroba + 1 || ultimoPunto == correo.length() - 1) {
+                System.out.println("El correo debe tener al menos un punto después del @ (ej: nombre@dominio.com).");
             } else {
                 return correo;
             }
@@ -163,8 +171,12 @@ public class Validador {
         do {
             System.out.print(mensaje);
             num = sc.nextLine().trim();
-            if (num.isEmpty()) {
-                System.out.println(" El número de cuenta no puede estar vacío.");
+            if (num.length() != 5) {
+                System.out.println("El número de cuenta debe tener exactamente 5 dígitos.");
+                continue;
+            }
+            if (!num.matches("\\d{5}")) {
+                System.out.println("El número de cuenta solo debe contener números.");
             } else {
                 return num;
             }

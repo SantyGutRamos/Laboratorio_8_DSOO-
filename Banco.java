@@ -6,29 +6,54 @@ public class Banco {
     private Map<String, Empleado> empleados = new HashMap<>();
     private Map<String, Cuenta> cuentas = new HashMap<>();
     private List<Titularidad> titularidades = new ArrayList<>();
+
     public void registrarCliente(Cliente c) {
+        if (clientes.containsKey(c.getIdCliente())) {
+            throw new IllegalArgumentException("Ya existe un cliente con ese ID");
+        }
         clientes.put(c.getIdCliente(), c);
-        System.out.println(" Cliente registrado: " + c.getNombre() + " " + c.getApellido());
+        System.out.println("Cliente registrado: " + c.getNombre() + " " + c.getApellido());
     }
     public void registrarEmpleado(Empleado e) {
+        if (empleados.containsKey(e.getIdEmpleado())) {
+            throw new IllegalArgumentException("Ya existe un empleado con ese ID");
+        }
         empleados.put(e.getIdEmpleado(), e);
-        System.out.println(" Empleado registrado: " + e.getNombre() + " " + e.getApellido());
+        System.out.println("Empleado registrado: " + e.getNombre() + " " + e.getApellido());
     }
     public void crearCuenta(Cuenta c) {
+        if (cuentas.containsKey(c.getNumeroCuenta())) {
+            throw new IllegalArgumentException("Ya existe una cuenta con ese número");
+        }
         cuentas.put(c.getNumeroCuenta(), c);
-        System.out.println(" Cuenta creada: " + c.getNumeroCuenta());
+        System.out.println("Cuenta creada: " + c.getNumeroCuenta());
     }
     public Cliente buscarClientePorId(String id) {
-        return clientes.get(id);
+        Cliente c = clientes.get(id);
+        if (c == null) {
+            throw new IllegalArgumentException("No existe cliente con ID: " + id);
+        }
+        return c;
     }
     public Empleado buscarEmpleadoPorId(String id) {
         return empleados.get(id);
     }
 
     public Cuenta buscarCuentaPorNumero(String numero) {
-        return cuentas.get(numero);
+        Cuenta c = cuentas.get(numero);
+        if (c == null) {
+            throw new IllegalArgumentException("No existe cuenta número: " + numero);
+        }
+        return c;
     }
     public void asignarTitular(Cliente cliente, Cuenta cuenta, LocalDate fechaInicio, String tipoTitular) {
+        // Evitar que el mismo cliente sea titular dos veces de la misma cuenta
+        for (Titularidad t : titularidades) {
+            if (t.getCliente().equals(cliente) && t.getCuenta().equals(cuenta)) {
+                throw new IllegalArgumentException("Este cliente ya es titular de esta cuenta");
+            }
+        }
+
         Titularidad t = new Titularidad(cliente, cuenta, fechaInicio, tipoTitular);
         titularidades.add(t);
         cliente.agregarTitularidad(t);

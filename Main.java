@@ -13,12 +13,48 @@ public class Main {
             sc.nextLine();
 
             switch (opcion) {
-                case 1 -> registrarCliente(gestor, sc);
-                case 2 -> registrarEmpleado(gestor, sc);
-                case 3 -> crearCuenta(gestor, sc);
-                case 4 -> asignarTitular(gestor, sc);
-                case 5 -> registrarDeposito(gestor, sc);
-                case 6 -> registrarRetiro(gestor, sc);
+                case 1 -> {
+                    try {
+                        registrarCliente(gestor, sc);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                }
+                case 2 -> {
+                    try {
+                        registrarEmpleado(gestor, sc);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                }
+                case 3 -> {
+                    try {
+                        crearCuenta(gestor, sc);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                }
+                case 4 -> {
+                    try {
+                        asignarTitular(gestor, sc);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                }
+                case 5 -> {
+                    try {
+                        registrarDeposito(gestor, sc);
+                    } catch (Exception e) {   // aquí puede saltar también RuntimeException del retiro
+                        System.out.println("Error en el depósito: " + e.getMessage());
+                    }
+                }
+                case 6 -> {
+                    try {
+                        registrarRetiro(gestor, sc);
+                    } catch (Exception e) {
+                        System.out.println("Error en el retiro: " + e.getMessage());
+                    }
+                }
                 case 7 -> consultarSaldo(gestor, sc);
                 case 8 -> verMovimientos(gestor, sc);
                 case 9 -> listarCuentasCliente(gestor, sc);
@@ -27,9 +63,9 @@ public class Main {
                 case 12 -> gestor.listarCuentas();
                 case 0 -> {
                     salir = true;
-                    System.out.println(" Fin del programa.");
+                    System.out.println("Fin del programa.");
                 }
-                default -> System.out.println(" Opción no válida.");
+                default -> System.out.println("Opción no válida.");
             }
         }
         sc.close();
