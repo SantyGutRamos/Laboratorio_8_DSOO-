@@ -73,9 +73,7 @@ public class Banco {
         if (empleado != null) {
             empleado.procesarTransaccion(d);
         } else {
-
             d.procesar();
-            c.agregarTransaccion(d);
         }
     }
 
@@ -90,9 +88,7 @@ public class Banco {
             if (empleado != null) {
                 empleado.procesarTransaccion(r);
             } else {
-
                 r.procesar();
-                c.agregarTransaccion(r);
             }
         } catch (RuntimeException ex) {
             System.out.println(ex.getMessage());
